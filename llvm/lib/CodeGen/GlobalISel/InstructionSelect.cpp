@@ -249,11 +249,11 @@ bool InstructionSelect::runOnMachineFunction(MachineFunction &MF) {
     }
   }
 
-#ifndef NDEBUG
   const TargetRegisterInfo &TRI = *MF.getSubtarget().getRegisterInfo();
-  // Now that selection is complete, there are no more generic vregs.  Verify
-  // that the size of the now-constrained vreg is unchanged and that it has a
-  // register class.
+#ifndef NDEBUG
+  // Now that selection is complete, there are no more alive generic vregs.
+  // Verify that the size of the now-constrained vreg is unchanged and that it
+  // has a register class.
   for (unsigned I = 0, E = MRI.getNumVirtRegs(); I != E; ++I) {
     Register VReg = Register::index2VirtReg(I);
 
@@ -288,12 +288,23 @@ bool InstructionSelect::runOnMachineFunction(MachineFunction &MF) {
   if (MF.size() != NumBlocks) {
     MachineOptimizationRemarkMissed R("gisel-select", "GISelFailure",
                                       MF.getFunction().getSubprogram(),
-                                      /*MBB=*/nullptr);
+                                      &*MF.begin());
     R << "inserting blocks is not supported yet";
     reportGISelFailure(MF, TPC, MORE, R);
     return false;
   }
 #endif
+  // MIR holds the predicate that all VRegs must have a class.  Assign any of
+  // it for registers without definition. Such registers may appear during
+  // legalization, instruction selection or in combiners due to removed
+  // instructions.
+  const TargetRegisterClass *DummyRC = TRI.getRegClass(0);
+  for (unsigned I = 0, E = MRI.getNumVirtRegs(); I != E; ++I) {
+    Register VReg = Register::index2VirtReg(I);
+    if (VReg.isVirtual() && !MRI.getRegClassOrNull(VReg))
+      MRI.setRegClass(VReg, DummyRC);
+  }
+
   // Determine if there are any calls in this machine function. Ported from
   // SelectionDAG.
   MachineFrameInfo &MFI = MF.getFrameInfo();

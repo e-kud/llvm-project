@@ -220,7 +220,7 @@ tracksRegLiveness: true
 
 # CHECK:      registers:
 # CHECK-NEXT:  - { id: 0, class: fpr32, preferred-register: '' }
-# CHECK-NEXT:  - { id: 1, class: gpr, preferred-register: '' }
+# CHECK-NEXT:  - { id: 1, class: fpr8, preferred-register: '' }
 # CHECK-NEXT:  - { id: 2, class: fpr32, preferred-register: '' }
 # CHECK-NEXT:  - { id: 3, class: gpr32, preferred-register: '' }
 registers:
@@ -257,7 +257,7 @@ regBankSelected: true
 tracksRegLiveness: true
 
 # CHECK:      registers:
-# CHECK-NEXT:  - { id: 0, class: gpr, preferred-register: '' }
+# CHECK-NEXT:  - { id: 0, class: fpr8, preferred-register: '' }
 # CHECK-NEXT:  - { id: 1, class: gpr32, preferred-register: '' }
 # CHECK-NEXT:  - { id: 2, class: gpr32, preferred-register: '' }
 # CHECK-NEXT:  - { id: 3, class: gpr32, preferred-register: '' }

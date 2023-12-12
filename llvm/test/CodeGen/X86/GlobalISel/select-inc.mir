@@ -14,8 +14,8 @@ legalized:       true
 regBankSelected: true
 # ALL:      registers:
 # ALL-NEXT:  - { id: 0, class: gr8, preferred-register: '' }
-# INC-NEXT:  - { id: 1, class: gpr, preferred-register: '' }
-# ADD-NEXT:  - { id: 1, class: gpr, preferred-register: '' }
+# INC-NEXT:  - { id: 1, class: gr8, preferred-register: '' }
+# ADD-NEXT:  - { id: 1, class: gr8, preferred-register: '' }
 # ALL-NEXT:  - { id: 2, class: gr8, preferred-register: '' }
 registers:
   - { id: 0, class: gpr }
