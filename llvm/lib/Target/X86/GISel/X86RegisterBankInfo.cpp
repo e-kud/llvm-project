@@ -166,6 +166,16 @@ X86RegisterBankInfo::getInstrMapping(const MachineInstr &MI) const {
   const MachineRegisterInfo &MRI = MF.getRegInfo();
   unsigned Opc = MI.getOpcode();
 
+  // TODO: there is no fp80 register bank yet
+  for (const auto &Op : MI.operands()) {
+    if (!Op.isReg())
+      continue;
+    Register Reg = Op.getReg();
+    if (X86::RFP80RegClass.contains(Reg) ||
+        (Reg.isVirtual() && MRI.getType(Reg).getSizeInBits() == 80))
+      return getInvalidInstructionMapping();
+  }
+
   // Try the default logic for non-generic instructions that are either copies
   // or already have some operands assigned to banks.
   if (!isPreISelGenericOpcode(Opc) || Opc == TargetOpcode::G_PHI) {
