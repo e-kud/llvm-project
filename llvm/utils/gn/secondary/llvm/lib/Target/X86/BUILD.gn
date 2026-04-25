@@ -32,7 +32,10 @@ tablegen("X86GenInstrMapping") {
 
 tablegen("X86GenFastISel") {
   visibility = [ ":LLVMX86CodeGen" ]
-  args = [ "-gen-fast-isel" ]
+  args = [
+    "-gen-global-isel",
+    "-gisel-extended-llt",
+  ]
   td_file = "X86.td"
 }
 

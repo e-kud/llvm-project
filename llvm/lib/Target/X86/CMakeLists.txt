@@ -11,7 +11,7 @@ tablegen(LLVM X86GenDisassemblerTables.inc -gen-disassembler)
 tablegen(LLVM X86GenInstrMapping.inc -gen-x86-instr-mapping)
 tablegen(LLVM X86GenExegesis.inc -gen-exegesis)
 tablegen(LLVM X86GenFastISel.inc -gen-fast-isel)
-tablegen(LLVM X86GenGlobalISel.inc -gen-global-isel)
+tablegen(LLVM X86GenGlobalISel.inc -gen-global-isel -gisel-extended-llt)
 tablegen(LLVM X86GenInstrInfo.inc -gen-instr-info
                                   -instr-info-expand-mi-operand-info=0)
 tablegen(LLVM X86GenMnemonicTables.inc -gen-x86-mnemonic-tables -asmwriternum=1)
