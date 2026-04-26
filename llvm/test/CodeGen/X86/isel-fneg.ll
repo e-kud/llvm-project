@@ -31,10 +31,7 @@ define double @fneg_f64(double %x) nounwind {
 ;
 ; GISEL-SSE-X64-LABEL: fneg_f64:
 ; GISEL-SSE-X64:       # %bb.0:
-; GISEL-SSE-X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
-; GISEL-SSE-X64-NEXT:    movq %xmm0, %rcx
-; GISEL-SSE-X64-NEXT:    xorq %rax, %rcx
-; GISEL-SSE-X64-NEXT:    movq %rcx, %xmm0
+; GISEL-SSE-X64-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; GISEL-SSE-X64-NEXT:    retq
   %y = fneg double %x
   ret double %y
@@ -103,9 +100,7 @@ define float @fneg_f32(float %x) nounwind {
 ;
 ; GISEL-SSE-X64-LABEL: fneg_f32:
 ; GISEL-SSE-X64:       # %bb.0:
-; GISEL-SSE-X64-NEXT:    movd %xmm0, %eax
-; GISEL-SSE-X64-NEXT:    addl $-2147483648, %eax # imm = 0x80000000
-; GISEL-SSE-X64-NEXT:    movd %eax, %xmm0
+; GISEL-SSE-X64-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; GISEL-SSE-X64-NEXT:    retq
   %y = fneg float %x
   ret float %y
