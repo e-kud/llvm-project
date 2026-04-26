@@ -122,10 +122,10 @@ body:             |
   bb.1 (%ir-block.0):
     liveins: $xmm0, $xmm1
 
-    %0(<4 x s32>) = COPY $xmm0
-    %1(<4 x s32>) = COPY $xmm1
-    %2(<4 x s32>) = G_FSUB %0, %1
-    $xmm0 = COPY %2(<4 x s32>)
+    %0(<4 x f32>) = COPY $xmm0
+    %1(<4 x f32>) = COPY $xmm1
+    %2(<4 x f32>) = G_FSUB %0, %1
+    $xmm0 = COPY %2(<4 x f32>)
     RET 0, implicit $xmm0
 
 ...
