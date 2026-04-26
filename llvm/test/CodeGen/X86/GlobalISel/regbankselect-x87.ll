@@ -142,15 +142,15 @@ define float @f4(float %val) {
   ; X86-LABEL: name: f4
   ; X86: bb.1 (%ir-block.0):
   ; X86-NEXT:   [[FRAME_INDEX:%[0-9]+]]:gpr(p0) = G_FRAME_INDEX %fixed-stack.0
-  ; X86-NEXT:   [[LOAD:%[0-9]+]]:psr(s32) = G_LOAD [[FRAME_INDEX]](p0) :: (invariant load (s32) from %fixed-stack.0)
-  ; X86-NEXT:   $fp0 = COPY [[LOAD]](s32)
+  ; X86-NEXT:   [[LOAD:%[0-9]+]]:psr(f32) = G_LOAD [[FRAME_INDEX]](p0) :: (invariant load (f32) from %fixed-stack.0)
+  ; X86-NEXT:   $fp0 = COPY [[LOAD]](f32)
   ; X86-NEXT:   RET 0, implicit $fp0
   ;
   ; X64-LABEL: name: f4
   ; X64: bb.1 (%ir-block.0):
   ; X64-NEXT:   [[FRAME_INDEX:%[0-9]+]]:gpr(p0) = G_FRAME_INDEX %fixed-stack.0
-  ; X64-NEXT:   [[LOAD:%[0-9]+]]:gpr(s32) = G_LOAD [[FRAME_INDEX]](p0) :: (invariant load (s32) from %fixed-stack.0, align 16)
-  ; X64-NEXT:   $xmm0 = COPY [[LOAD]](s32)
+  ; X64-NEXT:   [[LOAD:%[0-9]+]]:gpr(f32) = G_LOAD [[FRAME_INDEX]](p0) :: (invariant load (f32) from %fixed-stack.0, align 16)
+  ; X64-NEXT:   $xmm0 = COPY [[LOAD]](f32)
   ; X64-NEXT:   RET 0, implicit $xmm0
   ret float %val
 }
@@ -162,22 +162,22 @@ define void @f5(ptr %a, ptr %b) {
   ; X86-NEXT:   [[LOAD:%[0-9]+]]:gpr(p0) = G_LOAD [[FRAME_INDEX]](p0) :: (invariant load (p0) from %fixed-stack.1)
   ; X86-NEXT:   [[FRAME_INDEX1:%[0-9]+]]:gpr(p0) = G_FRAME_INDEX %fixed-stack.0
   ; X86-NEXT:   [[LOAD1:%[0-9]+]]:gpr(p0) = G_LOAD [[FRAME_INDEX1]](p0) :: (invariant load (p0) from %fixed-stack.0)
-  ; X86-NEXT:   [[LOAD2:%[0-9]+]]:gpr(s32) = G_LOAD [[LOAD]](p0) :: (load (s32) from %ir.a, align 8)
-  ; X86-NEXT:   [[C:%[0-9]+]]:gpr(s32) = G_CONSTANT i32 4
-  ; X86-NEXT:   [[PTR_ADD:%[0-9]+]]:gpr(p0) = nuw inbounds G_PTR_ADD [[LOAD]], [[C]](s32)
-  ; X86-NEXT:   [[LOAD3:%[0-9]+]]:gpr(s32) = G_LOAD [[PTR_ADD]](p0) :: (load (s32) from %ir.a + 4, basealign 8)
-  ; X86-NEXT:   [[MV:%[0-9]+]]:gpr(s64) = G_MERGE_VALUES [[LOAD2]](s32), [[LOAD3]](s32)
-  ; X86-NEXT:   [[LOAD4:%[0-9]+]]:gpr(s32) = G_LOAD [[LOAD1]](p0) :: (load (s32) from %ir.b, align 8)
-  ; X86-NEXT:   [[PTR_ADD1:%[0-9]+]]:gpr(p0) = nuw inbounds G_PTR_ADD [[LOAD1]], [[C]](s32)
-  ; X86-NEXT:   [[LOAD5:%[0-9]+]]:gpr(s32) = G_LOAD [[PTR_ADD1]](p0) :: (load (s32) from %ir.b + 4, basealign 8)
-  ; X86-NEXT:   [[MV1:%[0-9]+]]:gpr(s64) = G_MERGE_VALUES [[LOAD4]](s32), [[LOAD5]](s32)
-  ; X86-NEXT:   [[COPY:%[0-9]+]]:psr(s64) = COPY [[MV]](s64)
-  ; X86-NEXT:   [[COPY1:%[0-9]+]]:psr(s64) = COPY [[MV1]](s64)
-  ; X86-NEXT:   [[FADD:%[0-9]+]]:psr(s64) = G_FADD [[COPY]], [[COPY1]]
-  ; X86-NEXT:   [[COPY2:%[0-9]+]]:gpr(s64) = COPY [[FADD]](s64)
-  ; X86-NEXT:   [[UV:%[0-9]+]]:gpr(s32), [[UV1:%[0-9]+]]:gpr(s32) = G_UNMERGE_VALUES [[COPY2]](s64)
-  ; X86-NEXT:   G_STORE [[UV]](s32), [[LOAD]](p0) :: (store (s32) into %ir.a, align 8)
-  ; X86-NEXT:   G_STORE [[UV1]](s32), [[PTR_ADD]](p0) :: (store (s32) into %ir.a + 4, basealign 8)
+  ; X86-NEXT:   [[LOAD2:%[0-9]+]]:gpr(f32) = G_LOAD [[LOAD]](p0) :: (load (f32) from %ir.a, align 8)
+  ; X86-NEXT:   [[C:%[0-9]+]]:gpr(i32) = G_CONSTANT i32 4
+  ; X86-NEXT:   [[PTR_ADD:%[0-9]+]]:gpr(p0) = nuw inbounds G_PTR_ADD [[LOAD]], [[C]](i32)
+  ; X86-NEXT:   [[LOAD3:%[0-9]+]]:gpr(f32) = G_LOAD [[PTR_ADD]](p0) :: (load (f32) from %ir.a + 4, basealign 8)
+  ; X86-NEXT:   [[MV:%[0-9]+]]:gpr(f64) = G_MERGE_VALUES [[LOAD2]](f32), [[LOAD3]](f32)
+  ; X86-NEXT:   [[LOAD4:%[0-9]+]]:gpr(f32) = G_LOAD [[LOAD1]](p0) :: (load (f32) from %ir.b, align 8)
+  ; X86-NEXT:   [[PTR_ADD1:%[0-9]+]]:gpr(p0) = nuw inbounds G_PTR_ADD [[LOAD1]], [[C]](i32)
+  ; X86-NEXT:   [[LOAD5:%[0-9]+]]:gpr(f32) = G_LOAD [[PTR_ADD1]](p0) :: (load (f32) from %ir.b + 4, basealign 8)
+  ; X86-NEXT:   [[MV1:%[0-9]+]]:gpr(f64) = G_MERGE_VALUES [[LOAD4]](f32), [[LOAD5]](f32)
+  ; X86-NEXT:   [[COPY:%[0-9]+]]:psr(f64) = COPY [[MV]](f64)
+  ; X86-NEXT:   [[COPY1:%[0-9]+]]:psr(f64) = COPY [[MV1]](f64)
+  ; X86-NEXT:   [[FADD:%[0-9]+]]:psr(f64) = G_FADD [[COPY]], [[COPY1]]
+  ; X86-NEXT:   [[COPY2:%[0-9]+]]:gpr(f64) = COPY [[FADD]](f64)
+  ; X86-NEXT:   [[UV:%[0-9]+]]:gpr(f32), [[UV1:%[0-9]+]]:gpr(f32) = G_UNMERGE_VALUES [[COPY2]](f64)
+  ; X86-NEXT:   G_STORE [[UV]](f32), [[LOAD]](p0) :: (store (f32) into %ir.a, align 8)
+  ; X86-NEXT:   G_STORE [[UV1]](f32), [[PTR_ADD]](p0) :: (store (f32) into %ir.a + 4, basealign 8)
   ; X86-NEXT:   RET 0
   ;
   ; X64-LABEL: name: f5
@@ -186,10 +186,10 @@ define void @f5(ptr %a, ptr %b) {
   ; X64-NEXT: {{  $}}
   ; X64-NEXT:   [[COPY:%[0-9]+]]:gpr(p0) = COPY $rdi
   ; X64-NEXT:   [[COPY1:%[0-9]+]]:gpr(p0) = COPY $rsi
-  ; X64-NEXT:   [[LOAD:%[0-9]+]]:psr(s64) = G_LOAD [[COPY]](p0) :: (load (s64) from %ir.a)
-  ; X64-NEXT:   [[LOAD1:%[0-9]+]]:psr(s64) = G_LOAD [[COPY1]](p0) :: (load (s64) from %ir.b)
-  ; X64-NEXT:   [[FADD:%[0-9]+]]:psr(s64) = G_FADD [[LOAD]], [[LOAD1]]
-  ; X64-NEXT:   G_STORE [[FADD]](s64), [[COPY]](p0) :: (store (s64) into %ir.a)
+  ; X64-NEXT:   [[LOAD:%[0-9]+]]:psr(f64) = G_LOAD [[COPY]](p0) :: (load (f64) from %ir.a)
+  ; X64-NEXT:   [[LOAD1:%[0-9]+]]:psr(f64) = G_LOAD [[COPY1]](p0) :: (load (f64) from %ir.b)
+  ; X64-NEXT:   [[FADD:%[0-9]+]]:psr(f64) = G_FADD [[LOAD]], [[LOAD1]]
+  ; X64-NEXT:   G_STORE [[FADD]](f64), [[COPY]](p0) :: (store (f64) into %ir.a)
   ; X64-NEXT:   RET 0
   %load1 = load double, ptr %a, align 8
   %load2 = load double, ptr %b, align 8
@@ -205,10 +205,10 @@ define void @f6(ptr %0, ptr %1) {
   ; X86-NEXT:   [[LOAD:%[0-9]+]]:gpr(p0) = G_LOAD [[FRAME_INDEX]](p0) :: (invariant load (p0) from %fixed-stack.1)
   ; X86-NEXT:   [[FRAME_INDEX1:%[0-9]+]]:gpr(p0) = G_FRAME_INDEX %fixed-stack.0
   ; X86-NEXT:   [[LOAD1:%[0-9]+]]:gpr(p0) = G_LOAD [[FRAME_INDEX1]](p0) :: (invariant load (p0) from %fixed-stack.0)
-  ; X86-NEXT:   [[C:%[0-9]+]]:psr(s32) = G_FCONSTANT float 2.000000e+01
-  ; X86-NEXT:   [[LOAD2:%[0-9]+]]:psr(s32) = G_LOAD [[LOAD]](p0) :: (load (s32) from %ir.0)
-  ; X86-NEXT:   [[FADD:%[0-9]+]]:psr(s32) = G_FADD [[LOAD2]], [[C]]
-  ; X86-NEXT:   G_STORE [[FADD]](s32), [[LOAD1]](p0) :: (store (s32) into %ir.1)
+  ; X86-NEXT:   [[C:%[0-9]+]]:psr(f32) = G_FCONSTANT float 2.000000e+01
+  ; X86-NEXT:   [[LOAD2:%[0-9]+]]:psr(f32) = G_LOAD [[LOAD]](p0) :: (load (f32) from %ir.0)
+  ; X86-NEXT:   [[FADD:%[0-9]+]]:psr(f32) = G_FADD [[LOAD2]], [[C]]
+  ; X86-NEXT:   G_STORE [[FADD]](f32), [[LOAD1]](p0) :: (store (f32) into %ir.1)
   ; X86-NEXT:   RET 0
   ;
   ; X64-LABEL: name: f6
@@ -217,10 +217,10 @@ define void @f6(ptr %0, ptr %1) {
   ; X64-NEXT: {{  $}}
   ; X64-NEXT:   [[COPY:%[0-9]+]]:gpr(p0) = COPY $rdi
   ; X64-NEXT:   [[COPY1:%[0-9]+]]:gpr(p0) = COPY $rsi
-  ; X64-NEXT:   [[C:%[0-9]+]]:psr(s32) = G_FCONSTANT float 2.000000e+01
-  ; X64-NEXT:   [[LOAD:%[0-9]+]]:psr(s32) = G_LOAD [[COPY]](p0) :: (load (s32) from %ir.0)
-  ; X64-NEXT:   [[FADD:%[0-9]+]]:psr(s32) = G_FADD [[LOAD]], [[C]]
-  ; X64-NEXT:   G_STORE [[FADD]](s32), [[COPY1]](p0) :: (store (s32) into %ir.1)
+  ; X64-NEXT:   [[C:%[0-9]+]]:psr(f32) = G_FCONSTANT float 2.000000e+01
+  ; X64-NEXT:   [[LOAD:%[0-9]+]]:psr(f32) = G_LOAD [[COPY]](p0) :: (load (f32) from %ir.0)
+  ; X64-NEXT:   [[FADD:%[0-9]+]]:psr(f32) = G_FADD [[LOAD]], [[C]]
+  ; X64-NEXT:   G_STORE [[FADD]](f32), [[COPY1]](p0) :: (store (f32) into %ir.1)
   ; X64-NEXT:   RET 0
   %load1 = load float, ptr %0
   %add = fadd float %load1, 20.0

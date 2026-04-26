@@ -767,29 +767,29 @@ constants:
 body:             |
   bb.1 (%ir-block.0):
     ; FAST-LABEL: name: test_fsub_float
-    ; FAST: [[DEF:%[0-9]+]]:gpr(s32) = G_IMPLICIT_DEF
-    ; FAST: [[DEF1:%[0-9]+]]:gpr(s64) = G_IMPLICIT_DEF
-    ; FAST: [[COPY:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; FAST: [[COPY1:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; FAST: [[FSUB:%[0-9]+]]:vecr(s32) = G_FSUB [[COPY]], [[COPY1]]
-    ; FAST: [[COPY2:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; FAST: [[COPY3:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; FAST: [[FSUB1:%[0-9]+]]:vecr(s64) = G_FSUB [[COPY2]], [[COPY3]]
+    ; FAST: [[DEF:%[0-9]+]]:gpr(f32) = G_IMPLICIT_DEF
+    ; FAST: [[DEF1:%[0-9]+]]:gpr(f64) = G_IMPLICIT_DEF
+    ; FAST: [[COPY:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; FAST: [[COPY1:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; FAST: [[FSUB:%[0-9]+]]:vecr(f32) = G_FSUB [[COPY]], [[COPY1]]
+    ; FAST: [[COPY2:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; FAST: [[COPY3:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; FAST: [[FSUB1:%[0-9]+]]:vecr(f64) = G_FSUB [[COPY2]], [[COPY3]]
     ; FAST: RET 0
     ; GREEDY-LABEL: name: test_fsub_float
-    ; GREEDY: [[DEF:%[0-9]+]]:gpr(s32) = G_IMPLICIT_DEF
-    ; GREEDY: [[DEF1:%[0-9]+]]:gpr(s64) = G_IMPLICIT_DEF
-    ; GREEDY: [[COPY:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; GREEDY: [[COPY1:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; GREEDY: [[FSUB:%[0-9]+]]:vecr(s32) = G_FSUB [[COPY]], [[COPY1]]
-    ; GREEDY: [[COPY2:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; GREEDY: [[COPY3:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; GREEDY: [[FSUB1:%[0-9]+]]:vecr(s64) = G_FSUB [[COPY2]], [[COPY3]]
+    ; GREEDY: [[DEF:%[0-9]+]]:gpr(f32) = G_IMPLICIT_DEF
+    ; GREEDY: [[DEF1:%[0-9]+]]:gpr(f64) = G_IMPLICIT_DEF
+    ; GREEDY: [[COPY:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; GREEDY: [[COPY1:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; GREEDY: [[FSUB:%[0-9]+]]:vecr(f32) = G_FSUB [[COPY]], [[COPY1]]
+    ; GREEDY: [[COPY2:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; GREEDY: [[COPY3:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; GREEDY: [[FSUB1:%[0-9]+]]:vecr(f64) = G_FSUB [[COPY2]], [[COPY3]]
     ; GREEDY: RET 0
-    %0(s32) = G_IMPLICIT_DEF
-    %2(s64) = G_IMPLICIT_DEF
-    %1(s32) = G_FSUB %0, %0
-    %3(s64) = G_FSUB %2, %2
+    %0(f32) = G_IMPLICIT_DEF
+    %2(f64) = G_IMPLICIT_DEF
+    %1(f32) = G_FSUB %0, %0
+    %3(f64) = G_FSUB %2, %2
     RET 0
 
 ...
@@ -810,29 +810,29 @@ constants:
 body:             |
   bb.1 (%ir-block.0):
     ; FAST-LABEL: name: test_fmul_float
-    ; FAST: [[DEF:%[0-9]+]]:gpr(s32) = G_IMPLICIT_DEF
-    ; FAST: [[DEF1:%[0-9]+]]:gpr(s64) = G_IMPLICIT_DEF
-    ; FAST: [[COPY:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; FAST: [[COPY1:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; FAST: [[FMUL:%[0-9]+]]:vecr(s32) = G_FMUL [[COPY]], [[COPY1]]
-    ; FAST: [[COPY2:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; FAST: [[COPY3:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; FAST: [[FMUL1:%[0-9]+]]:vecr(s64) = G_FMUL [[COPY2]], [[COPY3]]
+    ; FAST: [[DEF:%[0-9]+]]:gpr(f32) = G_IMPLICIT_DEF
+    ; FAST: [[DEF1:%[0-9]+]]:gpr(f64) = G_IMPLICIT_DEF
+    ; FAST: [[COPY:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; FAST: [[COPY1:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; FAST: [[FMUL:%[0-9]+]]:vecr(f32) = G_FMUL [[COPY]], [[COPY1]]
+    ; FAST: [[COPY2:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; FAST: [[COPY3:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; FAST: [[FMUL1:%[0-9]+]]:vecr(f64) = G_FMUL [[COPY2]], [[COPY3]]
     ; FAST: RET 0
     ; GREEDY-LABEL: name: test_fmul_float
-    ; GREEDY: [[DEF:%[0-9]+]]:gpr(s32) = G_IMPLICIT_DEF
-    ; GREEDY: [[DEF1:%[0-9]+]]:gpr(s64) = G_IMPLICIT_DEF
-    ; GREEDY: [[COPY:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; GREEDY: [[COPY1:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; GREEDY: [[FMUL:%[0-9]+]]:vecr(s32) = G_FMUL [[COPY]], [[COPY1]]
-    ; GREEDY: [[COPY2:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; GREEDY: [[COPY3:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; GREEDY: [[FMUL1:%[0-9]+]]:vecr(s64) = G_FMUL [[COPY2]], [[COPY3]]
+    ; GREEDY: [[DEF:%[0-9]+]]:gpr(f32) = G_IMPLICIT_DEF
+    ; GREEDY: [[DEF1:%[0-9]+]]:gpr(f64) = G_IMPLICIT_DEF
+    ; GREEDY: [[COPY:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; GREEDY: [[COPY1:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; GREEDY: [[FMUL:%[0-9]+]]:vecr(f32) = G_FMUL [[COPY]], [[COPY1]]
+    ; GREEDY: [[COPY2:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; GREEDY: [[COPY3:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; GREEDY: [[FMUL1:%[0-9]+]]:vecr(f64) = G_FMUL [[COPY2]], [[COPY3]]
     ; GREEDY: RET 0
-    %0(s32) = G_IMPLICIT_DEF
-    %2(s64) = G_IMPLICIT_DEF
-    %1(s32) = G_FMUL %0, %0
-    %3(s64) = G_FMUL %2, %2
+    %0(f32) = G_IMPLICIT_DEF
+    %2(f64) = G_IMPLICIT_DEF
+    %1(f32) = G_FMUL %0, %0
+    %3(f64) = G_FMUL %2, %2
     RET 0
 
 ...
@@ -853,29 +853,29 @@ constants:
 body:             |
   bb.1 (%ir-block.0):
     ; FAST-LABEL: name: test_fdiv_float
-    ; FAST: [[DEF:%[0-9]+]]:gpr(s32) = G_IMPLICIT_DEF
-    ; FAST: [[DEF1:%[0-9]+]]:gpr(s64) = G_IMPLICIT_DEF
-    ; FAST: [[COPY:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; FAST: [[COPY1:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; FAST: [[FDIV:%[0-9]+]]:vecr(s32) = G_FDIV [[COPY]], [[COPY1]]
-    ; FAST: [[COPY2:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; FAST: [[COPY3:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; FAST: [[FDIV1:%[0-9]+]]:vecr(s64) = G_FDIV [[COPY2]], [[COPY3]]
+    ; FAST: [[DEF:%[0-9]+]]:gpr(f32) = G_IMPLICIT_DEF
+    ; FAST: [[DEF1:%[0-9]+]]:gpr(f64) = G_IMPLICIT_DEF
+    ; FAST: [[COPY:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; FAST: [[COPY1:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; FAST: [[FDIV:%[0-9]+]]:vecr(f32) = G_FDIV [[COPY]], [[COPY1]]
+    ; FAST: [[COPY2:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; FAST: [[COPY3:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; FAST: [[FDIV1:%[0-9]+]]:vecr(f64) = G_FDIV [[COPY2]], [[COPY3]]
     ; FAST: RET 0
     ; GREEDY-LABEL: name: test_fdiv_float
-    ; GREEDY: [[DEF:%[0-9]+]]:gpr(s32) = G_IMPLICIT_DEF
-    ; GREEDY: [[DEF1:%[0-9]+]]:gpr(s64) = G_IMPLICIT_DEF
-    ; GREEDY: [[COPY:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; GREEDY: [[COPY1:%[0-9]+]]:vecr(s32) = COPY [[DEF]](s32)
-    ; GREEDY: [[FDIV:%[0-9]+]]:vecr(s32) = G_FDIV [[COPY]], [[COPY1]]
-    ; GREEDY: [[COPY2:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; GREEDY: [[COPY3:%[0-9]+]]:vecr(s64) = COPY [[DEF1]](s64)
-    ; GREEDY: [[FDIV1:%[0-9]+]]:vecr(s64) = G_FDIV [[COPY2]], [[COPY3]]
+    ; GREEDY: [[DEF:%[0-9]+]]:gpr(f32) = G_IMPLICIT_DEF
+    ; GREEDY: [[DEF1:%[0-9]+]]:gpr(f64) = G_IMPLICIT_DEF
+    ; GREEDY: [[COPY:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; GREEDY: [[COPY1:%[0-9]+]]:vecr(f32) = COPY [[DEF]](f32)
+    ; GREEDY: [[FDIV:%[0-9]+]]:vecr(f32) = G_FDIV [[COPY]], [[COPY1]]
+    ; GREEDY: [[COPY2:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; GREEDY: [[COPY3:%[0-9]+]]:vecr(f64) = COPY [[DEF1]](f64)
+    ; GREEDY: [[FDIV1:%[0-9]+]]:vecr(f64) = G_FDIV [[COPY2]], [[COPY3]]
     ; GREEDY: RET 0
-    %0(s32) = G_IMPLICIT_DEF
-    %2(s64) = G_IMPLICIT_DEF
-    %1(s32) = G_FDIV %0, %0
-    %3(s64) = G_FDIV %2, %2
+    %0(f32) = G_IMPLICIT_DEF
+    %2(f64) = G_IMPLICIT_DEF
+    %1(f32) = G_FDIV %0, %0
+    %3(f64) = G_FDIV %2, %2
     RET 0
 
 ...
