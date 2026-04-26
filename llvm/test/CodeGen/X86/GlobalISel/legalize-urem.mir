@@ -93,28 +93,28 @@ body:             |
     ; X86: [[DEF:%[0-9]+]]:_(s64) = IMPLICIT_DEF
     ; X86-NEXT: [[DEF1:%[0-9]+]]:_(s64) = IMPLICIT_DEF
     ; X86-NEXT: ADJCALLSTACKDOWN32 16, 0, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
-    ; X86-NEXT: [[UV:%[0-9]+]]:_(s32), [[UV1:%[0-9]+]]:_(s32) = G_UNMERGE_VALUES [[DEF]](s64)
+    ; X86-NEXT: [[UV:%[0-9]+]]:_(i32), [[UV1:%[0-9]+]]:_(i32) = G_UNMERGE_VALUES [[DEF]](s64)
     ; X86-NEXT: [[COPY:%[0-9]+]]:_(p0) = COPY $esp
     ; X86-NEXT: [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
     ; X86-NEXT: [[PTR_ADD:%[0-9]+]]:_(p0) = G_PTR_ADD [[COPY]], [[C]](s32)
-    ; X86-NEXT: G_STORE [[UV]](s32), [[PTR_ADD]](p0) :: (store (s32) into stack, align 1)
+    ; X86-NEXT: G_STORE [[UV]](i32), [[PTR_ADD]](p0) :: (store (i32) into stack, align 1)
     ; X86-NEXT: [[COPY1:%[0-9]+]]:_(p0) = COPY $esp
     ; X86-NEXT: [[C1:%[0-9]+]]:_(s32) = G_CONSTANT i32 4
     ; X86-NEXT: [[PTR_ADD1:%[0-9]+]]:_(p0) = G_PTR_ADD [[COPY1]], [[C1]](s32)
-    ; X86-NEXT: G_STORE [[UV1]](s32), [[PTR_ADD1]](p0) :: (store (s32) into stack + 4, align 1)
-    ; X86-NEXT: [[UV2:%[0-9]+]]:_(s32), [[UV3:%[0-9]+]]:_(s32) = G_UNMERGE_VALUES [[DEF1]](s64)
+    ; X86-NEXT: G_STORE [[UV1]](i32), [[PTR_ADD1]](p0) :: (store (i32) into stack + 4, align 1)
+    ; X86-NEXT: [[UV2:%[0-9]+]]:_(i32), [[UV3:%[0-9]+]]:_(i32) = G_UNMERGE_VALUES [[DEF1]](s64)
     ; X86-NEXT: [[COPY2:%[0-9]+]]:_(p0) = COPY $esp
     ; X86-NEXT: [[C2:%[0-9]+]]:_(s32) = G_CONSTANT i32 8
     ; X86-NEXT: [[PTR_ADD2:%[0-9]+]]:_(p0) = G_PTR_ADD [[COPY2]], [[C2]](s32)
-    ; X86-NEXT: G_STORE [[UV2]](s32), [[PTR_ADD2]](p0) :: (store (s32) into stack + 8, align 1)
+    ; X86-NEXT: G_STORE [[UV2]](i32), [[PTR_ADD2]](p0) :: (store (i32) into stack + 8, align 1)
     ; X86-NEXT: [[COPY3:%[0-9]+]]:_(p0) = COPY $esp
     ; X86-NEXT: [[C3:%[0-9]+]]:_(s32) = G_CONSTANT i32 12
     ; X86-NEXT: [[PTR_ADD3:%[0-9]+]]:_(p0) = G_PTR_ADD [[COPY3]], [[C3]](s32)
-    ; X86-NEXT: G_STORE [[UV3]](s32), [[PTR_ADD3]](p0) :: (store (s32) into stack + 12, align 1)
+    ; X86-NEXT: G_STORE [[UV3]](i32), [[PTR_ADD3]](p0) :: (store (i32) into stack + 12, align 1)
     ; X86-NEXT: CALLpcrel32 &__umoddi3, csr_32, implicit $esp, implicit $ssp, implicit-def $eax, implicit-def $edx
-    ; X86-NEXT: [[COPY4:%[0-9]+]]:_(s32) = COPY $eax
-    ; X86-NEXT: [[COPY5:%[0-9]+]]:_(s32) = COPY $edx
-    ; X86-NEXT: [[MV:%[0-9]+]]:_(s64) = G_MERGE_VALUES [[COPY4]](s32), [[COPY5]](s32)
+    ; X86-NEXT: [[COPY4:%[0-9]+]]:_(i32) = COPY $eax
+    ; X86-NEXT: [[COPY5:%[0-9]+]]:_(i32) = COPY $edx
+    ; X86-NEXT: [[MV:%[0-9]+]]:_(s64) = G_MERGE_VALUES [[COPY4]](i32), [[COPY5]](i32)
     ; X86-NEXT: ADJCALLSTACKUP32 16, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
     ; X86-NEXT: [[COPY6:%[0-9]+]]:_(s64) = COPY [[MV]](s64)
     ; X86-NEXT: RET 0, implicit [[COPY6]](s64)
