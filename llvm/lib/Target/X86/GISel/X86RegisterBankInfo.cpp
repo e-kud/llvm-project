@@ -290,6 +290,15 @@ X86RegisterBankInfo::getInstrMapping(const MachineInstr &MI) const {
   SmallVector<PartialMappingIdx, 4> OpRegBankIdx(NumOperands);
 
   switch (Opc) {
+  case TargetOpcode::G_BITCAST: {
+    auto &Op0 = MI.getOperand(0);
+    auto &Op1 = MI.getOperand(1);
+    const LLT Ty0 = MRI.getType(Op0.getReg());
+    const LLT Ty1 = MRI.getType(Op1.getReg());
+    OpRegBankIdx[0] = getPartialMappingIdx(MI, Ty0, /* isFP= */ Ty0.isFloat());
+    OpRegBankIdx[1] = getPartialMappingIdx(MI, Ty1, /* isFP= */ Ty1.isFloat());
+    break;
+  }
   case TargetOpcode::G_FSQRT:
   case TargetOpcode::G_FPEXT:
   case TargetOpcode::G_FNEG:

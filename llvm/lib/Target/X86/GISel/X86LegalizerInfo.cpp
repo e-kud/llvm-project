@@ -54,6 +54,8 @@ X86LegalizerInfo::X86LegalizerInfo(const X86Subtarget &STI,
   const LLT s8 = LLT::scalar(8);
   const LLT s16 = LLT::scalar(16);
   const LLT s32 = LLT::scalar(32);
+  const LLT i32 = LLT::integer(32);
+  const LLT f32 = LLT::float32();
   const LLT s64 = LLT::scalar(64);
   const LLT s80 = LLT::scalar(80);
   const LLT s128 = LLT::scalar(128);
@@ -593,6 +595,9 @@ X86LegalizerInfo::X86LegalizerInfo(const X86Subtarget &STI,
                          {v16s32, v8s32},
                          {v8s64, v2s64},
                          {v8s64, v4s64}});
+
+  getActionDefinitionsBuilder(G_BITCAST)
+      .legalFor(HasSSE1, {{i32, f32}, {f32, i32}});
 
   // todo: vectors and address spaces
   getActionDefinitionsBuilder(G_SELECT)
