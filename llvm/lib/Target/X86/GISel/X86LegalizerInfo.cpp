@@ -849,9 +849,9 @@ bool X86LegalizerInfo::legalizeGETROUNDING(MachineInstr &MI,
   MachineFunction &MF = MIRBuilder.getMF();
   Register Dst = MI.getOperand(0).getReg();
   LLT DstTy = MRI.getType(Dst);
-  const LLT s8 = LLT::scalar(8);
-  const LLT s16 = LLT::scalar(16);
-  const LLT s32 = LLT::scalar(32);
+  const LLT s8 = LLT::integer(8);
+  const LLT s16 = LLT::integer(16);
+  const LLT s32 = LLT::integer(32);
 
   // Save FP Control Word to stack slot
   int MemSize = 2;
@@ -902,9 +902,9 @@ bool X86LegalizerInfo::legalizeSETROUNDING(MachineInstr &MI,
   MachineIRBuilder &MIRBuilder = Helper.MIRBuilder;
   MachineFunction &MF = MIRBuilder.getMF();
   Register Src = MI.getOperand(0).getReg();
-  const LLT s8 = LLT::scalar(8);
-  const LLT s16 = LLT::scalar(16);
-  const LLT s32 = LLT::scalar(32);
+  const LLT s8 = LLT::integer(8);
+  const LLT s16 = LLT::integer(16);
+  const LLT s32 = LLT::integer(32);
 
   // Allocate stack slot for control word and MXCSR (4 bytes).
   int MemSize = 4;
