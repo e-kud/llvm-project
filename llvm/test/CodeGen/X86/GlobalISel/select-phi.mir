@@ -393,12 +393,10 @@ body:             |
   ; ALL-NEXT:   liveins: $edi, $xmm0, $xmm1
   ; ALL-NEXT: {{  $}}
   ; ALL-NEXT:   [[COPY:%[0-9]+]]:gr32 = COPY $edi
-  ; ALL-NEXT:   [[COPY1:%[0-9]+]]:vr128 = COPY $xmm0
-  ; ALL-NEXT:   [[COPY2:%[0-9]+]]:fr32 = COPY [[COPY1]]
-  ; ALL-NEXT:   [[COPY3:%[0-9]+]]:vr128 = COPY $xmm1
-  ; ALL-NEXT:   [[COPY4:%[0-9]+]]:fr32 = COPY [[COPY3]]
-  ; ALL-NEXT:   [[MOV32r0_:%[0-9]+]]:gr32 = MOV32r0 implicit-def dead $eflags
-  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32r0_]], implicit-def $eflags
+  ; ALL-NEXT:   [[COPY1:%[0-9]+]]:fr32 = COPY $xmm0
+  ; ALL-NEXT:   [[COPY2:%[0-9]+]]:fr32 = COPY $xmm1
+  ; ALL-NEXT:   [[MOV32ri:%[0-9]+]]:gr32 = MOV32ri 0
+  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32ri]], implicit-def $eflags
   ; ALL-NEXT:   [[SETCCr:%[0-9]+]]:gr8 = SETCCr 15, implicit $eflags
   ; ALL-NEXT:   TEST8ri [[SETCCr]], 1, implicit-def $eflags
   ; ALL-NEXT:   JCC_1 %bb.2, 5, implicit $eflags
@@ -407,19 +405,16 @@ body:             |
   ; ALL-NEXT:   successors: %bb.2(0x80000000)
   ; ALL-NEXT: {{  $}}
   ; ALL-NEXT: bb.2.cond.end:
-  ; ALL-NEXT:   [[PHI:%[0-9]+]]:fr32 = PHI [[COPY4]], %bb.1, [[COPY2]], %bb.0
-  ; ALL-NEXT:   [[COPY5:%[0-9]+]]:vr128 = COPY [[PHI]]
-  ; ALL-NEXT:   $xmm0 = COPY [[COPY5]]
+  ; ALL-NEXT:   [[PHI:%[0-9]+]]:fr32 = PHI [[COPY2]], %bb.1, [[COPY1]], %bb.0
+  ; ALL-NEXT:   $xmm0 = COPY [[PHI]]
   ; ALL-NEXT:   RET 0, implicit $xmm0
   bb.1.entry:
     successors: %bb.3(0x40000000), %bb.2(0x40000000)
     liveins: $edi, $xmm0, $xmm1
 
     %0:gpr(s32) = COPY $edi
-    %3:vecr(s128) = COPY $xmm0
-    %1:vecr(s32) = G_TRUNC %3(s128)
-    %4:vecr(s128) = COPY $xmm1
-    %2:vecr(s32) = G_TRUNC %4(s128)
+    %1:vecr(f32) = COPY $xmm0
+    %2:vecr(f32) = COPY $xmm1
     %5:gpr(s32) = G_CONSTANT i32 0
     %9:gpr(s8) = G_ICMP intpred(sgt), %0(s32), %5
     %6:gpr(s1) = G_TRUNC %9(s8)
@@ -429,9 +424,8 @@ body:             |
     successors: %bb.3(0x80000000)
 
   bb.3.cond.end:
-    %7:vecr(s32) = G_PHI %2(s32), %bb.2, %1(s32), %bb.1
-    %8:vecr(s128) = G_ANYEXT %7(s32)
-    $xmm0 = COPY %8(s128)
+    %7:vecr(f32) = G_PHI %2(f32), %bb.2, %1(f32), %bb.1
+    $xmm0 = COPY %7(f32)
     RET 0, implicit $xmm0
 
 ...
@@ -458,12 +452,10 @@ body:             |
   ; ALL-NEXT:   liveins: $edi, $xmm0, $xmm1
   ; ALL-NEXT: {{  $}}
   ; ALL-NEXT:   [[COPY:%[0-9]+]]:gr32 = COPY $edi
-  ; ALL-NEXT:   [[COPY1:%[0-9]+]]:vr128 = COPY $xmm0
-  ; ALL-NEXT:   [[COPY2:%[0-9]+]]:fr64 = COPY [[COPY1]]
-  ; ALL-NEXT:   [[COPY3:%[0-9]+]]:vr128 = COPY $xmm1
-  ; ALL-NEXT:   [[COPY4:%[0-9]+]]:fr64 = COPY [[COPY3]]
-  ; ALL-NEXT:   [[MOV32r0_:%[0-9]+]]:gr32 = MOV32r0 implicit-def dead $eflags
-  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32r0_]], implicit-def $eflags
+  ; ALL-NEXT:   [[COPY1:%[0-9]+]]:fr64 = COPY $xmm0
+  ; ALL-NEXT:   [[COPY2:%[0-9]+]]:fr64 = COPY $xmm1
+  ; ALL-NEXT:   [[MOV32ri:%[0-9]+]]:gr32 = MOV32ri 0
+  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32ri]], implicit-def $eflags
   ; ALL-NEXT:   [[SETCCr:%[0-9]+]]:gr8 = SETCCr 15, implicit $eflags
   ; ALL-NEXT:   TEST8ri [[SETCCr]], 1, implicit-def $eflags
   ; ALL-NEXT:   JCC_1 %bb.2, 5, implicit $eflags
@@ -472,19 +464,16 @@ body:             |
   ; ALL-NEXT:   successors: %bb.2(0x80000000)
   ; ALL-NEXT: {{  $}}
   ; ALL-NEXT: bb.2.cond.end:
-  ; ALL-NEXT:   [[PHI:%[0-9]+]]:fr64 = PHI [[COPY4]], %bb.1, [[COPY2]], %bb.0
-  ; ALL-NEXT:   [[COPY5:%[0-9]+]]:vr128 = COPY [[PHI]]
-  ; ALL-NEXT:   $xmm0 = COPY [[COPY5]]
+  ; ALL-NEXT:   [[PHI:%[0-9]+]]:fr64 = PHI [[COPY2]], %bb.1, [[COPY1]], %bb.0
+  ; ALL-NEXT:   $xmm0 = COPY [[PHI]]
   ; ALL-NEXT:   RET 0, implicit $xmm0
   bb.1.entry:
     successors: %bb.3(0x40000000), %bb.2(0x40000000)
     liveins: $edi, $xmm0, $xmm1
 
     %0:gpr(s32) = COPY $edi
-    %3:vecr(s128) = COPY $xmm0
-    %1:vecr(s64) = G_TRUNC %3(s128)
-    %4:vecr(s128) = COPY $xmm1
-    %2:vecr(s64) = G_TRUNC %4(s128)
+    %1:vecr(f64) = COPY $xmm0
+    %2:vecr(f64) = COPY $xmm1
     %5:gpr(s32) = G_CONSTANT i32 0
     %9:gpr(s8) = G_ICMP intpred(sgt), %0(s32), %5
     %6:gpr(s1) = G_TRUNC %9(s8)
@@ -494,9 +483,8 @@ body:             |
     successors: %bb.3(0x80000000)
 
   bb.3.cond.end:
-    %7:vecr(s64) = G_PHI %2(s64), %bb.2, %1(s64), %bb.1
-    %8:vecr(s128) = G_ANYEXT %7(s64)
-    $xmm0 = COPY %8(s128)
+    %7:vecr(f64) = G_PHI %2(f64), %bb.2, %1(f64), %bb.1
+    $xmm0 = COPY %7(f64)
     RET 0, implicit $xmm0
 
 ...
