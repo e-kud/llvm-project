@@ -2164,8 +2164,11 @@ bool MIParser::parseLowLevelType(StringRef::iterator Loc, LLT &Ty) {
     if (Token.range().starts_with("bf") && ScalarSize != 16)
       return error("invalid size for bfloat");
 
-    Ty = Token.range().starts_with("bf") ? LLT::bfloat16()
-                                         : LLT::floatIEEE(ScalarSize);
+    if (Token.stringValue() == "f80")
+      Ty = LLT::x86fp80();
+    else
+      Ty = Token.range().starts_with("bf") ? LLT::bfloat16()
+                                           : LLT::floatIEEE(ScalarSize);
     lex();
     return false;
   }
