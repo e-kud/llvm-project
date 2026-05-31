@@ -781,8 +781,8 @@ bool X86LegalizerInfo::legalizeFPTOUI(MachineInstr &MI,
   MachineIRBuilder &MIRBuilder = Helper.MIRBuilder;
   auto [Dst, DstTy, Src, SrcTy] = MI.getFirst2RegLLTs();
   unsigned DstSizeInBits = DstTy.getScalarSizeInBits();
-  const LLT s32 = LLT::scalar(32);
-  const LLT s64 = LLT::scalar(64);
+  const LLT s32 = LLT::integer(32);
+  const LLT s64 = LLT::integer(64);
 
   // Simply reuse FPTOSI when it is possible to widen the type
   if (DstSizeInBits <= 32) {
@@ -800,8 +800,8 @@ bool X86LegalizerInfo::legalizeUITOFP(MachineInstr &MI,
                                       LegalizerHelper &Helper) const {
   MachineIRBuilder &MIRBuilder = Helper.MIRBuilder;
   auto [Dst, DstTy, Src, SrcTy] = MI.getFirst2RegLLTs();
-  const LLT s32 = LLT::scalar(32);
-  const LLT s64 = LLT::scalar(64);
+  const LLT s32 = LLT::integer(32);
+  const LLT s64 = LLT::integer(64);
 
   // Simply reuse SITOFP when it is possible to widen the type
   if (SrcTy.getSizeInBits() <= 32) {

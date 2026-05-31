@@ -19,16 +19,18 @@ define double @test_ui64_to_double(i64 %x) {
 ; GISEL-X64:       # %bb.0: # %entry
 ; GISEL-X64-NEXT:    movabsq $4841369599423283200, %rax # imm = 0x4330000000000000
 ; GISEL-X64-NEXT:    movabsq $4985484787499139072, %rcx # imm = 0x4530000000000000
-; GISEL-X64-NEXT:    movsd {{.*#+}} xmm0 = [1.9342813118337666E+25,0.0E+0]
+; GISEL-X64-NEXT:    movsd {{.*#+}} xmm1 = [1.9342813118337666E+25,0.0E+0]
 ; GISEL-X64-NEXT:    movl $4294967295, %edx # imm = 0xFFFFFFFF
 ; GISEL-X64-NEXT:    andq %rdi, %rdx
 ; GISEL-X64-NEXT:    orq %rax, %rdx
+; GISEL-X64-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    movsd {{.*#+}} xmm2 = mem[0],zero
 ; GISEL-X64-NEXT:    shrq $32, %rdi
-; GISEL-X64-NEXT:    orq %rdi, %rcx
-; GISEL-X64-NEXT:    movq %rcx, %xmm1
-; GISEL-X64-NEXT:    subsd %xmm0, %xmm1
-; GISEL-X64-NEXT:    movq %rdx, %xmm0
-; GISEL-X64-NEXT:    addsd %xmm1, %xmm0
+; GISEL-X64-NEXT:    orq %rcx, %rdi
+; GISEL-X64-NEXT:    movq %rdi, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
+; GISEL-X64-NEXT:    subsd %xmm1, %xmm0
+; GISEL-X64-NEXT:    addsd %xmm2, %xmm0
 ; GISEL-X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_ui64_to_double:

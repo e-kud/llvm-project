@@ -8476,30 +8476,30 @@ LegalizerHelper::lowerU64ToF32BitOps(MachineInstr &MI) {
 LegalizerHelper::LegalizeResult
 LegalizerHelper::lowerU64ToF32WithSITOFP(MachineInstr &MI) {
   auto [Dst, Src] = MI.getFirst2Regs();
-  const LLT S64 = LLT::scalar(64);
-  const LLT S32 = LLT::scalar(32);
-  const LLT S1 = LLT::scalar(1);
+  const LLT I64 = LLT::integer(64);
+  const LLT F32 = LLT::floatIEEE(32);
+  const LLT I1 = LLT::integer(1);
 
-  assert(MRI.getType(Src) == S64 && MRI.getType(Dst) == S32);
+  assert(MRI.getType(Src) == I64 && MRI.getType(Dst) == F32);
 
   // For i64 < INT_MAX we simply reuse SITOFP.
   // Otherwise, divide i64 by 2, round result by ORing with the lowest bit
   // saved before division, convert to float by SITOFP, multiply the result
   // by 2.
-  auto One = MIRBuilder.buildConstant(S64, 1);
-  auto Zero = MIRBuilder.buildConstant(S64, 0);
+  auto One = MIRBuilder.buildConstant(I64, 1);
+  auto Zero = MIRBuilder.buildConstant(I64, 0);
   // Result if Src < INT_MAX
-  auto SmallResult = MIRBuilder.buildSITOFP(S32, Src);
+  auto SmallResult = MIRBuilder.buildSITOFP(F32, Src);
   // Result if Src >= INT_MAX
-  auto Halved = MIRBuilder.buildLShr(S64, Src, One);
-  auto LowerBit = MIRBuilder.buildAnd(S64, Src, One);
-  auto RoundedHalved = MIRBuilder.buildOr(S64, Halved, LowerBit);
-  auto HalvedFP = MIRBuilder.buildSITOFP(S32, RoundedHalved);
-  auto LargeResult = MIRBuilder.buildFAdd(S32, HalvedFP, HalvedFP);
+  auto Halved = MIRBuilder.buildLShr(I64, Src, One);
+  auto LowerBit = MIRBuilder.buildAnd(I64, Src, One);
+  auto RoundedHalved = MIRBuilder.buildOr(I64, Halved, LowerBit);
+  auto HalvedFP = MIRBuilder.buildSITOFP(F32, RoundedHalved);
+  auto LargeResult = MIRBuilder.buildFAdd(F32, HalvedFP, HalvedFP);
   // Check if the original value is larger than INT_MAX by comparing with
   // zero to pick one of the two conversions.
   auto IsLarge =
-      MIRBuilder.buildICmp(CmpInst::Predicate::ICMP_SLT, S1, Src, Zero);
+      MIRBuilder.buildICmp(CmpInst::Predicate::ICMP_SLT, I1, Src, Zero);
   MIRBuilder.buildSelect(Dst, IsLarge, LargeResult, SmallResult);
 
   MI.eraseFromParent();
@@ -8511,10 +8511,11 @@ LegalizerHelper::lowerU64ToF32WithSITOFP(MachineInstr &MI) {
 LegalizerHelper::LegalizeResult
 LegalizerHelper::lowerU64ToF64BitFloatOps(MachineInstr &MI) {
   auto [Dst, Src] = MI.getFirst2Regs();
-  const LLT S64 = LLT::scalar(64);
-  const LLT S32 = LLT::scalar(32);
+  const LLT i64 = LLT::integer(64);
+  const LLT f64 = LLT::floatIEEE(64);
+  const LLT i32 = LLT::integer(32);
 
-  assert(MRI.getType(Src) == S64 && MRI.getType(Dst) == S64);
+  assert(MRI.getType(Src) == i64 && MRI.getType(Dst) == f64);
 
   // We create double value from 32 bit parts with 32 exponent difference.
   // Note that + and - are float operations that adjust the implicit leading
@@ -8525,18 +8526,23 @@ LegalizerHelper::lowerU64ToF64BitFloatOps(MachineInstr &MI) {
   // Scratch = 2^84 * 1.0...HighBits - 2^84 * 1.0 - 2^52 * 1.0
   //         = - 2^52 * 1.0...HighBits
   // Result = - 2^52 * 1.0...HighBits + 2^52 * 1.0...LowBits
-  auto TwoP52 = MIRBuilder.buildConstant(S64, UINT64_C(0x4330000000000000));
-  auto TwoP84 = MIRBuilder.buildConstant(S64, UINT64_C(0x4530000000000000));
+  auto TwoP52 = MIRBuilder.buildConstant(i64, UINT64_C(0x4330000000000000));
+  auto TwoP84 = MIRBuilder.buildConstant(i64, UINT64_C(0x4530000000000000));
   auto TwoP52P84 = llvm::bit_cast<double>(UINT64_C(0x4530000000100000));
-  auto TwoP52P84FP = MIRBuilder.buildFConstant(S64, TwoP52P84);
-  auto HalfWidth = MIRBuilder.buildConstant(S64, 32);
+  auto TwoP52P84FP = MIRBuilder.buildFConstant(f64, TwoP52P84);
+  auto HalfWidth = MIRBuilder.buildConstant(i64, 32);
 
-  auto LowBits = MIRBuilder.buildTrunc(S32, Src);
-  LowBits = MIRBuilder.buildZExt(S64, LowBits);
-  auto LowBitsFP = MIRBuilder.buildOr(S64, TwoP52, LowBits);
-  auto HighBits = MIRBuilder.buildLShr(S64, Src, HalfWidth);
-  auto HighBitsFP = MIRBuilder.buildOr(S64, TwoP84, HighBits);
-  auto Scratch = MIRBuilder.buildFSub(S64, HighBitsFP, TwoP52P84FP);
+  auto LowBits = MIRBuilder.buildTrunc(i32, Src);
+  LowBits = MIRBuilder.buildZExt(i64, LowBits);
+  auto LowBitsFP = MIRBuilder.buildOr(i64, TwoP52, LowBits);
+  if (f64.isFloat())
+    LowBitsFP = MIRBuilder.buildBitcast(f64, LowBitsFP);
+  auto HighBits = MIRBuilder.buildLShr(i64, Src, HalfWidth);
+  auto HighBitsFP = MIRBuilder.buildOr(i64, TwoP84, HighBits);
+  // Create bitcast if extended types are present
+  if (f64.isFloat())
+    HighBitsFP = MIRBuilder.buildBitcast(f64, HighBitsFP);
+  auto Scratch = MIRBuilder.buildFSub(f64, HighBitsFP, TwoP52P84FP);
   MIRBuilder.buildFAdd(Dst, Scratch, LowBitsFP);
 
   MI.eraseFromParent();
@@ -8667,10 +8673,10 @@ LegalizerHelper::LegalizeResult LegalizerHelper::lowerFPTOUI(MachineInstr &MI) {
   MachineInstrBuilder ResHighBit = MIRBuilder.buildConstant(DstTy, TwoPExpInt);
   MachineInstrBuilder Res = MIRBuilder.buildXor(DstTy, ResLowBits, ResHighBit);
 
-  const LLT S1 = LLT::scalar(1);
+  const LLT I1 = LLT::integer(1);
 
   MachineInstrBuilder FCMP =
-      MIRBuilder.buildFCmp(CmpInst::FCMP_ULT, S1, Src, Threshold);
+      MIRBuilder.buildFCmp(CmpInst::FCMP_ULT, I1, Src, Threshold);
   MIRBuilder.buildSelect(Dst, FCMP, FPTOSI, Res);
 
   MI.eraseFromParent();
@@ -8679,11 +8685,12 @@ LegalizerHelper::LegalizeResult LegalizerHelper::lowerFPTOUI(MachineInstr &MI) {
 
 LegalizerHelper::LegalizeResult LegalizerHelper::lowerFPTOSI(MachineInstr &MI) {
   auto [Dst, DstTy, Src, SrcTy] = MI.getFirst2RegLLTs();
-  const LLT S64 = LLT::scalar(64);
-  const LLT S32 = LLT::scalar(32);
+  const LLT I64 = LLT::integer(64);
+  const LLT I32 = LLT::integer(32);
+  const LLT F32 = LLT::floatIEEE(32);
 
   // FIXME: Only f32 to i64 conversions are supported.
-  if (SrcTy.getScalarType() != S32 || DstTy.getScalarType() != S64)
+  if (SrcTy.getScalarType() != F32 || DstTy.getScalarType() != I64)
     return UnableToLegalize;
 
   // Expand f32 -> i64 conversion
@@ -8692,47 +8699,51 @@ LegalizerHelper::LegalizeResult LegalizerHelper::lowerFPTOSI(MachineInstr &MI) {
 
   unsigned SrcEltBits = SrcTy.getScalarSizeInBits();
 
-  auto ExponentMask = MIRBuilder.buildConstant(SrcTy, 0x7F800000);
-  auto ExponentLoBit = MIRBuilder.buildConstant(SrcTy, 23);
+  auto ExponentMask = MIRBuilder.buildConstant(I32, 0x7F800000);
+  auto ExponentLoBit = MIRBuilder.buildConstant(I32, 23);
 
-  auto AndExpMask = MIRBuilder.buildAnd(SrcTy, Src, ExponentMask);
-  auto ExponentBits = MIRBuilder.buildLShr(SrcTy, AndExpMask, ExponentLoBit);
+  Register ISrc = Src;
+  if (F32.isFloat())
+    ISrc = MIRBuilder.buildBitcast(F32, Src).getReg(0);
 
-  auto SignMask = MIRBuilder.buildConstant(SrcTy,
+  auto AndExpMask = MIRBuilder.buildAnd(I32, ISrc, ExponentMask);
+  auto ExponentBits = MIRBuilder.buildLShr(I32, AndExpMask, ExponentLoBit);
+
+  auto SignMask = MIRBuilder.buildConstant(I32,
                                            APInt::getSignMask(SrcEltBits));
-  auto AndSignMask = MIRBuilder.buildAnd(SrcTy, Src, SignMask);
-  auto SignLowBit = MIRBuilder.buildConstant(SrcTy, SrcEltBits - 1);
-  auto Sign = MIRBuilder.buildAShr(SrcTy, AndSignMask, SignLowBit);
+  auto AndSignMask = MIRBuilder.buildAnd(I32, ISrc, SignMask);
+  auto SignLowBit = MIRBuilder.buildConstant(I32, SrcEltBits - 1);
+  auto Sign = MIRBuilder.buildAShr(I32, AndSignMask, SignLowBit);
   Sign = MIRBuilder.buildSExt(DstTy, Sign);
 
-  auto MantissaMask = MIRBuilder.buildConstant(SrcTy, 0x007FFFFF);
-  auto AndMantissaMask = MIRBuilder.buildAnd(SrcTy, Src, MantissaMask);
-  auto K = MIRBuilder.buildConstant(SrcTy, 0x00800000);
+  auto MantissaMask = MIRBuilder.buildConstant(I32, 0x007FFFFF);
+  auto AndMantissaMask = MIRBuilder.buildAnd(I32, ISrc, MantissaMask);
+  auto K = MIRBuilder.buildConstant(I32, 0x00800000);
 
-  auto R = MIRBuilder.buildOr(SrcTy, AndMantissaMask, K);
+  auto R = MIRBuilder.buildOr(I32, AndMantissaMask, K);
   R = MIRBuilder.buildZExt(DstTy, R);
 
-  auto Bias = MIRBuilder.buildConstant(SrcTy, 127);
-  auto Exponent = MIRBuilder.buildSub(SrcTy, ExponentBits, Bias);
-  auto SubExponent = MIRBuilder.buildSub(SrcTy, Exponent, ExponentLoBit);
-  auto ExponentSub = MIRBuilder.buildSub(SrcTy, ExponentLoBit, Exponent);
+  auto Bias = MIRBuilder.buildConstant(I32, 127);
+  auto Exponent = MIRBuilder.buildSub(I32, ExponentBits, Bias);
+  auto SubExponent = MIRBuilder.buildSub(I32, Exponent, ExponentLoBit);
+  auto ExponentSub = MIRBuilder.buildSub(I32, ExponentLoBit, Exponent);
 
   auto Shl = MIRBuilder.buildShl(DstTy, R, SubExponent);
   auto Srl = MIRBuilder.buildLShr(DstTy, R, ExponentSub);
 
-  const LLT S1 = LLT::scalar(1);
+  const LLT I1 = LLT::integer(1);
   auto CmpGt = MIRBuilder.buildICmp(CmpInst::ICMP_SGT,
-                                    S1, Exponent, ExponentLoBit);
+                                    I1, Exponent, ExponentLoBit);
 
   R = MIRBuilder.buildSelect(DstTy, CmpGt, Shl, Srl);
 
   auto XorSign = MIRBuilder.buildXor(DstTy, R, Sign);
   auto Ret = MIRBuilder.buildSub(DstTy, XorSign, Sign);
 
-  auto ZeroSrcTy = MIRBuilder.buildConstant(SrcTy, 0);
+  auto ZeroSrcTy = MIRBuilder.buildConstant(I32, 0);
 
   auto ExponentLt0 = MIRBuilder.buildICmp(CmpInst::ICMP_SLT,
-                                          S1, Exponent, ZeroSrcTy);
+                                          I1, Exponent, ZeroSrcTy);
 
   auto ZeroDstTy = MIRBuilder.buildConstant(DstTy, 0);
   MIRBuilder.buildSelect(Dst, ExponentLt0, ZeroDstTy, Ret);
