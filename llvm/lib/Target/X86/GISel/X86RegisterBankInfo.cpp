@@ -167,6 +167,9 @@ X86GenRegisterBankInfo::getPartialMappingIdx(const MachineInstr &MI,
     }
   } else if (Ty.isScalar()) {
     switch (Ty.getSizeInBits()) {
+    case 16:
+      assert(HasSSE1 && "Unsupported register size.");
+      return PMI_FP16;
     case 32:
       return HasSSE1 ? PMI_FP32 : PMI_PSR32;
     case 64:

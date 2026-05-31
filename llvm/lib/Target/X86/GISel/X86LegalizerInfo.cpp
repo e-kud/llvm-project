@@ -52,7 +52,9 @@ X86LegalizerInfo::X86LegalizerInfo(const X86Subtarget &STI,
   const LLT p0 = LLT::pointer(0, TM.getPointerSizeInBits(0));
   const LLT s1 = LLT::scalar(1);
   const LLT s8 = LLT::scalar(8);
+  const LLT i16 = LLT::integer(16);
   const LLT s16 = LLT::scalar(16);
+  const LLT f16 = LLT::float16();
   const LLT s32 = LLT::scalar(32);
   const LLT i32 = LLT::integer(32);
   const LLT f32 = LLT::float32();
@@ -597,7 +599,8 @@ X86LegalizerInfo::X86LegalizerInfo(const X86Subtarget &STI,
                          {v8s64, v4s64}});
 
   getActionDefinitionsBuilder(G_BITCAST)
-      .legalFor(HasSSE1, {{i32, f32}, {f32, i32}});
+      .legalFor(HasSSE1, {{i32, f32}, {f32, i32}, {i16, f16}, {f16, i16}})
+      .customFor(UseX87, {{s32, s32}, {s64, s64}});
 
   // todo: vectors and address spaces
   getActionDefinitionsBuilder(G_SELECT)
@@ -641,6 +644,8 @@ bool X86LegalizerInfo::legalizeCustom(LegalizerHelper &Helper, MachineInstr &MI,
   default:
     // No idea what to do.
     return false;
+  case TargetOpcode::G_BITCAST:
+    return legalizeBITCAST(MI, MRI, Helper);
   case TargetOpcode::G_BUILD_VECTOR:
     return legalizeBuildVector(MI, MRI, Helper);
   case TargetOpcode::G_FPTOUI:
@@ -1053,6 +1058,26 @@ bool X86LegalizerInfo::legalizeGLOBAL_VALUE(MachineInstr &MI,
     MIRBuilder.buildLoad(Dst, StubAddr, *MMO);
     MI.eraseFromParent();
   }
+  return true;
+}
+
+bool X86LegalizerInfo::legalizeBITCAST(MachineInstr &MI,
+		                       MachineRegisterInfo &MRI,
+                                       LegalizerHelper &Helper) const {
+  auto [Dst, DstTy, Src, SrcTy] = MI.getFirst2RegLLTs();
+  MachineIRBuilder &MIRBuilder = Helper.MIRBuilder;
+  MachineFunction &MF = MIRBuilder.getMF();
+  size_t MemSize = SrcTy.getSizeInBytes();
+  Align Alignment = Align(MemSize);
+  MachinePointerInfo PtrInfo;
+  auto StackTemp = Helper.createStackTemporary(TypeSize::getFixed(MemSize),
+                                               Alignment, PtrInfo);
+  auto StoreMMO = MF.getMachineMemOperand(PtrInfo, MachineMemOperand::MOStore,
+                                          MemSize, Alignment);
+  MIRBuilder.buildStore(Src, StackTemp, *StoreMMO);
+  auto LoadMMO = MF.getMachineMemOperand(PtrInfo, MachineMemOperand::MOLoad, MemSize, Alignment);
+  MIRBuilder.buildLoad(Dst, StackTemp, *LoadMMO);
+  MI.eraseFromParent();
   return true;
 }
 
