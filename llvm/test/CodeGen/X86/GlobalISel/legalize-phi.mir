@@ -150,19 +150,19 @@ body:             |
   ; CHECK-NEXT:   [[COPY1:%[0-9]+]]:_(s32) = COPY $esi
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s1) = G_TRUNC [[COPY1]](s32)
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s32) = COPY $edx
-  ; CHECK-NEXT:   [[TRUNC2:%[0-9]+]]:_(s1) = G_TRUNC [[COPY2]](s32)
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[TRUNC1:%[0-9]+]]:_(s1) = G_TRUNC [[COPY2]](s32)
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
-  ; CHECK-NEXT:   [[TRUNC1:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
-  ; CHECK-NEXT:   G_BRCOND [[TRUNC1]](s1), %bb.2
+  ; CHECK-NEXT:   [[TRUNC2:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
+  ; CHECK-NEXT:   G_BRCOND [[TRUNC2]](s1), %bb.2
   ; CHECK-NEXT: {{  $}}
   ; CHECK-NEXT: bb.1.cond.false:
   ; CHECK-NEXT:   successors: %bb.2(0x80000000)
   ; CHECK-NEXT: {{  $}}
   ; CHECK-NEXT: bb.2.cond.end:
-  ; CHECK-NEXT:   [[PHI:%[0-9]+]]:_(s1) = G_PHI [[TRUNC2]](s1), %bb.1, [[TRUNC]](s1), %bb.0
-  ; CHECK-NEXT:   [[EXT:%[0-9]+]]:_(s8) = G_ANYEXT [[PHI]](s1)
-  ; CHECK-NEXT:   $al = COPY [[EXT]](s8)
+  ; CHECK-NEXT:   [[PHI:%[0-9]+]]:_(s1) = G_PHI [[TRUNC1]](s1), %bb.1, [[TRUNC]](s1), %bb.0
+  ; CHECK-NEXT:   [[ANYEXT:%[0-9]+]]:_(s8) = G_ANYEXT [[PHI]](s1)
+  ; CHECK-NEXT:   $al = COPY [[ANYEXT]](s8)
   ; CHECK-NEXT:   RET 0, implicit $al
   bb.1.entry:
     successors: %bb.3(0x40000000), %bb.2(0x40000000)
@@ -173,7 +173,7 @@ body:             |
     %1:_(s1) = G_TRUNC %3(s32)
     %4:_(s32) = COPY $edx
     %2:_(s1) = G_TRUNC %4(s32)
-    %5:_(s32) = G_CONSTANT i32 0
+    %5:_(i32) = G_CONSTANT i32 0
     %6:_(s1) = G_ICMP intpred(sgt), %0(s32), %5
     G_BRCOND %6(s1), %bb.3
 
@@ -221,7 +221,7 @@ body:             |
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s8) = G_TRUNC [[COPY1]](s32)
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s32) = COPY $edx
   ; CHECK-NEXT:   [[TRUNC1:%[0-9]+]]:_(s8) = G_TRUNC [[COPY2]](s32)
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
   ; CHECK-NEXT:   [[TRUNC2:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
   ; CHECK-NEXT:   G_BRCOND [[TRUNC2]](s1), %bb.2
@@ -242,7 +242,7 @@ body:             |
     %1:_(s8) = G_TRUNC %3(s32)
     %4:_(s32) = COPY $edx
     %2:_(s8) = G_TRUNC %4(s32)
-    %5:_(s32) = G_CONSTANT i32 0
+    %5:_(i32) = G_CONSTANT i32 0
     %6:_(s1) = G_ICMP intpred(sgt), %0(s32), %5
     G_BRCOND %6(s1), %bb.3
 
@@ -289,7 +289,7 @@ body:             |
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s16) = G_TRUNC [[COPY1]](s32)
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s32) = COPY $edx
   ; CHECK-NEXT:   [[TRUNC1:%[0-9]+]]:_(s16) = G_TRUNC [[COPY2]](s32)
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
   ; CHECK-NEXT:   [[TRUNC2:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
   ; CHECK-NEXT:   G_BRCOND [[TRUNC2]](s1), %bb.2
@@ -310,7 +310,7 @@ body:             |
     %1:_(s16) = G_TRUNC %3(s32)
     %4:_(s32) = COPY $edx
     %2:_(s16) = G_TRUNC %4(s32)
-    %5:_(s32) = G_CONSTANT i32 0
+    %5:_(i32) = G_CONSTANT i32 0
     %6:_(s1) = G_ICMP intpred(sgt), %0(s32), %5
     G_BRCOND %6(s1), %bb.3
 
@@ -353,7 +353,7 @@ body:             |
   ; CHECK-NEXT:   [[COPY:%[0-9]+]]:_(s32) = COPY $edi
   ; CHECK-NEXT:   [[COPY1:%[0-9]+]]:_(s32) = COPY $esi
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s32) = COPY $edx
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
   ; CHECK-NEXT:   G_BRCOND [[TRUNC]](s1), %bb.1
@@ -378,7 +378,7 @@ body:             |
     %0(s32) = COPY $edi
     %1(s32) = COPY $esi
     %2(s32) = COPY $edx
-    %3(s32) = G_CONSTANT i32 0
+    %3(i32) = G_CONSTANT i32 0
     %4(s1) = G_ICMP intpred(sgt), %0(s32), %3
     G_BRCOND %4(s1), %bb.2
     G_BR %bb.3
@@ -427,7 +427,7 @@ body:             |
   ; CHECK-NEXT:   [[COPY:%[0-9]+]]:_(s32) = COPY $edi
   ; CHECK-NEXT:   [[COPY1:%[0-9]+]]:_(s64) = COPY $rsi
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s64) = COPY $rdx
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
   ; CHECK-NEXT:   G_BRCOND [[TRUNC]](s1), %bb.1
@@ -452,7 +452,7 @@ body:             |
     %0(s32) = COPY $edi
     %1(s64) = COPY $rsi
     %2(s64) = COPY $rdx
-    %3(s32) = G_CONSTANT i32 0
+    %3(i32) = G_CONSTANT i32 0
     %4(s1) = G_ICMP intpred(sgt), %0(s32), %3
     G_BRCOND %4(s1), %bb.2
     G_BR %bb.3
@@ -506,7 +506,7 @@ body:             |
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s32) = G_TRUNC [[COPY1]](s128)
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s128) = COPY $xmm1
   ; CHECK-NEXT:   [[TRUNC1:%[0-9]+]]:_(s32) = G_TRUNC [[COPY2]](s128)
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
   ; CHECK-NEXT:   [[TRUNC2:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
   ; CHECK-NEXT:   G_BRCOND [[TRUNC2]](s1), %bb.2
@@ -528,7 +528,7 @@ body:             |
     %1:_(s32) = G_TRUNC %3(s128)
     %4:_(s128) = COPY $xmm1
     %2:_(s32) = G_TRUNC %4(s128)
-    %5:_(s32) = G_CONSTANT i32 0
+    %5:_(i32) = G_CONSTANT i32 0
     %6:_(s1) = G_ICMP intpred(sgt), %0(s32), %5
     G_BRCOND %6(s1), %bb.3
 
@@ -577,7 +577,7 @@ body:             |
   ; CHECK-NEXT:   [[TRUNC:%[0-9]+]]:_(s64) = G_TRUNC [[COPY1]](s128)
   ; CHECK-NEXT:   [[COPY2:%[0-9]+]]:_(s128) = COPY $xmm1
   ; CHECK-NEXT:   [[TRUNC1:%[0-9]+]]:_(s64) = G_TRUNC [[COPY2]](s128)
-  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 0
+  ; CHECK-NEXT:   [[C:%[0-9]+]]:_(i32) = G_CONSTANT i32 0
   ; CHECK-NEXT:   [[ICMP:%[0-9]+]]:_(s8) = G_ICMP intpred(sgt), [[COPY]](s32), [[C]]
   ; CHECK-NEXT:   [[TRUNC2:%[0-9]+]]:_(s1) = G_TRUNC [[ICMP]](s8)
   ; CHECK-NEXT:   G_BRCOND [[TRUNC2]](s1), %bb.2
@@ -599,7 +599,7 @@ body:             |
     %1:_(s64) = G_TRUNC %3(s128)
     %4:_(s128) = COPY $xmm1
     %2:_(s64) = G_TRUNC %4(s128)
-    %5:_(s32) = G_CONSTANT i32 0
+    %5:_(i32) = G_CONSTANT i32 0
     %6:_(s1) = G_ICMP intpred(sgt), %0(s32), %5
     G_BRCOND %6(s1), %bb.3
 

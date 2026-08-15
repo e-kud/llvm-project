@@ -18,7 +18,7 @@ body:             |
     ; CHECK-NEXT: $rax = COPY %a(s64)
     ; CHECK-NEXT: RET implicit $rax
     %a:_(s64) = COPY $rax
-    %b:_(s64) = G_CONSTANT i64 0
+    %b:_(i64) = G_CONSTANT i64 0
     %res:_(s64) = G_LSHR %a, %b
     $rax = COPY %res(s64)
     RET implicit $rax

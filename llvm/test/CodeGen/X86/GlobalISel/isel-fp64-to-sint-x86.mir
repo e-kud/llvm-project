@@ -89,14 +89,14 @@ body:             |
     ; GISEL-X86-NEXT: RET 0, implicit $eax, implicit $edx
     %1:_(p0) = G_FRAME_INDEX %fixed-stack.0
     %10:_(s32) = G_LOAD %1(p0) :: (invariant load (s32) from %fixed-stack.0, align 16)
-    %8:_(s32) = G_CONSTANT i32 4
-    %11:_(p0) = G_PTR_ADD %1, %8(s32)
+    %8:_(i32) = G_CONSTANT i32 4
+    %11:_(p0) = G_PTR_ADD %1, %8(i32)
     %12:_(s32) = G_LOAD %11(p0) :: (invariant load (s32) from %fixed-stack.0 + 4, basealign 16)
     %0:_(f64) = IMPLICIT_DEF
     %5:_(p0) = G_FRAME_INDEX %stack.0
     G_FIST %0(f64), %5(p0) :: (store (s64) into %stack.0)
     %6:_(s32) = G_LOAD %5(p0) :: (load (s32) from %stack.0, align 8)
-    %7:_(p0) = G_PTR_ADD %5, %8(s32)
+    %7:_(p0) = G_PTR_ADD %5, %8(i32)
     %9:_(s32) = G_LOAD %7(p0) :: (load (s32) from %stack.0 + 4, basealign 8)
     $eax = COPY %6(s32)
     $edx = COPY %9(s32)

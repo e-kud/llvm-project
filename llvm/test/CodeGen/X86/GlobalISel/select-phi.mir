@@ -395,8 +395,8 @@ body:             |
   ; ALL-NEXT:   [[COPY:%[0-9]+]]:gr32 = COPY $edi
   ; ALL-NEXT:   [[COPY1:%[0-9]+]]:fr32 = COPY $xmm0
   ; ALL-NEXT:   [[COPY2:%[0-9]+]]:fr32 = COPY $xmm1
-  ; ALL-NEXT:   [[MOV32ri:%[0-9]+]]:gr32 = MOV32ri 0
-  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32ri]], implicit-def $eflags
+  ; ALL-NEXT:   [[MOV32r0_:%[0-9]+]]:gr32 = MOV32r0 implicit-def dead $eflags
+  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32r0_]], implicit-def $eflags
   ; ALL-NEXT:   [[SETCCr:%[0-9]+]]:gr8 = SETCCr 15, implicit $eflags
   ; ALL-NEXT:   TEST8ri [[SETCCr]], 1, implicit-def $eflags
   ; ALL-NEXT:   JCC_1 %bb.2, 5, implicit $eflags
@@ -415,8 +415,8 @@ body:             |
     %0:gpr(s32) = COPY $edi
     %1:vecr(f32) = COPY $xmm0
     %2:vecr(f32) = COPY $xmm1
-    %5:gpr(s32) = G_CONSTANT i32 0
-    %9:gpr(s8) = G_ICMP intpred(sgt), %0(s32), %5
+    %5:gpr(i32) = G_CONSTANT i32 0
+    %9:gpr(s8) = G_ICMP intpred(sgt), %0(i32), %5
     %6:gpr(s1) = G_TRUNC %9(s8)
     G_BRCOND %6(s1), %bb.3
 
@@ -454,8 +454,8 @@ body:             |
   ; ALL-NEXT:   [[COPY:%[0-9]+]]:gr32 = COPY $edi
   ; ALL-NEXT:   [[COPY1:%[0-9]+]]:fr64 = COPY $xmm0
   ; ALL-NEXT:   [[COPY2:%[0-9]+]]:fr64 = COPY $xmm1
-  ; ALL-NEXT:   [[MOV32ri:%[0-9]+]]:gr32 = MOV32ri 0
-  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32ri]], implicit-def $eflags
+  ; ALL-NEXT:   [[MOV32r0_:%[0-9]+]]:gr32 = MOV32r0 implicit-def dead $eflags
+  ; ALL-NEXT:   CMP32rr [[COPY]], [[MOV32r0_]], implicit-def $eflags
   ; ALL-NEXT:   [[SETCCr:%[0-9]+]]:gr8 = SETCCr 15, implicit $eflags
   ; ALL-NEXT:   TEST8ri [[SETCCr]], 1, implicit-def $eflags
   ; ALL-NEXT:   JCC_1 %bb.2, 5, implicit $eflags
@@ -474,8 +474,8 @@ body:             |
     %0:gpr(s32) = COPY $edi
     %1:vecr(f64) = COPY $xmm0
     %2:vecr(f64) = COPY $xmm1
-    %5:gpr(s32) = G_CONSTANT i32 0
-    %9:gpr(s8) = G_ICMP intpred(sgt), %0(s32), %5
+    %5:gpr(i32) = G_CONSTANT i32 0
+    %9:gpr(s8) = G_ICMP intpred(sgt), %0(i32), %5
     %6:gpr(s1) = G_TRUNC %9(s8)
     G_BRCOND %6(s1), %bb.3
 

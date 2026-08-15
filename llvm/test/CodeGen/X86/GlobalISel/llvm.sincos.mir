@@ -42,16 +42,16 @@ body:             |
     %5:_(p0) = G_FRAME_INDEX %stack.1
     ADJCALLSTACKDOWN32 12, 0, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
     %6:_(p0) = COPY $esp
-    %7:_(s32) = G_CONSTANT i32 0
-    %8:_(p0) = G_PTR_ADD %6, %7(s32)
+    %7:_(i32) = G_CONSTANT i32 0
+    %8:_(p0) = G_PTR_ADD %6, %7(i32)
     G_STORE %0(s32), %8(p0) :: (store (s32) into stack, align 1)
     %9:_(p0) = COPY $esp
-    %10:_(s32) = G_CONSTANT i32 4
-    %11:_(p0) = G_PTR_ADD %9, %10(s32)
+    %10:_(i32) = G_CONSTANT i32 4
+    %11:_(p0) = G_PTR_ADD %9, %10(i32)
     G_STORE %4(p0), %11(p0) :: (store (s32) into stack + 4, align 1)
     %12:_(p0) = COPY $esp
-    %13:_(s32) = G_CONSTANT i32 8
-    %14:_(p0) = G_PTR_ADD %12, %13(s32)
+    %13:_(i32) = G_CONSTANT i32 8
+    %14:_(p0) = G_PTR_ADD %12, %13(i32)
     G_STORE %5(p0), %14(p0) :: (store (s32) into stack + 8, align 1)
     CALLpcrel32 &sincosf, csr_32, implicit $esp, implicit $ssp
     ADJCALLSTACKUP32 12, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
@@ -101,25 +101,25 @@ body:             |
     ; GISEL-I686-NEXT: RET 0, implicit $fp0, implicit $fp1
     %1:_(p0) = G_FRAME_INDEX %fixed-stack.0
     %25:_(s32) = G_LOAD %1(p0) :: (invariant load (s32) from %fixed-stack.0, align 16)
-    %17:_(s32) = G_CONSTANT i32 4
-    %26:_(p0) = G_PTR_ADD %1, %17(s32)
+    %17:_(i32) = G_CONSTANT i32 4
+    %26:_(p0) = G_PTR_ADD %1, %17(i32)
     %27:_(s32) = G_LOAD %26(p0) :: (invariant load (s32) from %fixed-stack.0 + 4, basealign 16)
     %4:_(p0) = G_FRAME_INDEX %stack.0
     %5:_(p0) = G_FRAME_INDEX %stack.1
     ADJCALLSTACKDOWN32 16, 0, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
     %6:_(p0) = COPY $esp
-    %7:_(s32) = G_CONSTANT i32 0
-    %8:_(p0) = G_PTR_ADD %6, %7(s32)
+    %7:_(i32) = G_CONSTANT i32 0
+    %8:_(p0) = G_PTR_ADD %6, %7(i32)
     G_STORE %25(s32), %8(p0) :: (store (s32) into stack, align 1)
-    %24:_(p0) = G_PTR_ADD %8, %17(s32)
+    %24:_(p0) = G_PTR_ADD %8, %17(i32)
     G_STORE %27(s32), %24(p0) :: (store (s32) into stack + 4, align 1)
     %9:_(p0) = COPY $esp
-    %10:_(s32) = G_CONSTANT i32 8
-    %11:_(p0) = G_PTR_ADD %9, %10(s32)
+    %10:_(i32) = G_CONSTANT i32 8
+    %11:_(p0) = G_PTR_ADD %9, %10(i32)
     G_STORE %4(p0), %11(p0) :: (store (s32) into stack + 8, align 1)
     %12:_(p0) = COPY $esp
-    %13:_(s32) = G_CONSTANT i32 12
-    %14:_(p0) = G_PTR_ADD %12, %13(s32)
+    %13:_(i32) = G_CONSTANT i32 12
+    %14:_(p0) = G_PTR_ADD %12, %13(i32)
     G_STORE %5(p0), %14(p0) :: (store (s32) into stack + 12, align 1)
     CALLpcrel32 &sincos, csr_32, implicit $esp, implicit $ssp
     ADJCALLSTACKUP32 16, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
@@ -168,16 +168,16 @@ body:             |
     %5:_(p0) = G_FRAME_INDEX %stack.1
     ADJCALLSTACKDOWN32 20, 0, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp
     %6:_(p0) = COPY $esp
-    %7:_(s32) = G_CONSTANT i32 0
-    %8:_(p0) = G_PTR_ADD %6, %7(s32)
+    %7:_(i32) = G_CONSTANT i32 0
+    %8:_(p0) = G_PTR_ADD %6, %7(i32)
     G_STORE %0(s80), %8(p0) :: (store (s80) into stack, align 1)
     %9:_(p0) = COPY $esp
-    %10:_(s32) = G_CONSTANT i32 12
-    %11:_(p0) = G_PTR_ADD %9, %10(s32)
+    %10:_(i32) = G_CONSTANT i32 12
+    %11:_(p0) = G_PTR_ADD %9, %10(i32)
     G_STORE %4(p0), %11(p0) :: (store (s32) into stack + 12, align 1)
     %12:_(p0) = COPY $esp
-    %13:_(s32) = G_CONSTANT i32 16
-    %14:_(p0) = G_PTR_ADD %12, %13(s32)
+    %13:_(i32) = G_CONSTANT i32 16
+    %14:_(p0) = G_PTR_ADD %12, %13(i32)
     G_STORE %5(p0), %14(p0) :: (store (s32) into stack + 16, align 1)
     CALLpcrel32 &sincosl, csr_32, implicit $esp, implicit $ssp
     ADJCALLSTACKUP32 20, 0, implicit-def $esp, implicit-def $eflags, implicit-def $ssp, implicit $esp, implicit $ssp

@@ -18,7 +18,7 @@ body:             |
     ; CHECK-NEXT: $eax = COPY %op(s32)
     ; CHECK-NEXT: RET implicit $eax
     %x:_(s32) = COPY $eax
-    %cst:_(s32) = G_CONSTANT i32 1
+    %cst:_(i32) = G_CONSTANT i32 1
     %op:_(s32) = G_SUB %x(s32), %cst
     $eax = COPY %op(s32)
     RET implicit $eax
@@ -38,7 +38,7 @@ body:             |
     ; CHECK-NEXT: $eax = COPY %op(s32)
     ; CHECK-NEXT: RET implicit $eax
     %x:_(s32) = COPY $eax
-    %cst:_(s32) = G_CONSTANT i32 1
+    %cst:_(i32) = G_CONSTANT i32 1
     %op:_(s32) = G_SUB %x(s32), %cst
     $eax = COPY %op(s32)
     RET implicit $eax
@@ -58,7 +58,7 @@ body:             |
     ; CHECK-NEXT: $eax = COPY %op(s32)
     ; CHECK-NEXT: RET implicit $eax
     %x:_(s32) = COPY $eax
-    %cst:_(s32) = G_CONSTANT i32 1
+    %cst:_(i32) = G_CONSTANT i32 1
     %op:_(s32) = nuw G_SUB %x(s32), %cst
     $eax = COPY %op(s32)
     RET implicit $eax
@@ -74,14 +74,14 @@ body:             |
     ; CHECK-NEXT: {{  $}}
     ; CHECK-NEXT: %a:_(s32) = COPY $eax
     ; CHECK-NEXT: %b:_(s8) = G_TRUNC %a(s32)
-    ; CHECK-NEXT: %c:_(s8) = G_CONSTANT i8 -128
-    ; CHECK-NEXT: %add:_(s8) = G_ADD %b, %c
+    ; CHECK-NEXT: [[C:%[0-9]+]]:_(s8) = G_CONSTANT i8 -128
+    ; CHECK-NEXT: %add:_(s8) = G_ADD %b, [[C]]
     ; CHECK-NEXT: %d:_(s32) = G_ZEXT %add(s8)
     ; CHECK-NEXT: $eax = COPY %d(s32)
     ; CHECK-NEXT: RET implicit $rax
     %a:_(s32) = COPY $eax
     %b:_(s8) = G_TRUNC %a
-    %c:_(s8) = G_CONSTANT i8 -128
+    %c:_(i8) = G_CONSTANT i8 -128
     %add:_(s8) = nsw nuw G_SUB %b, %c
     %d:_(s32) = G_ZEXT %add
     $eax = COPY %d
@@ -97,12 +97,12 @@ body:             |
     ; CHECK: liveins: $eax, $ebx
     ; CHECK-NEXT: {{  $}}
     ; CHECK-NEXT: %a:_(s32) = COPY $eax
-    ; CHECK-NEXT: %c:_(s32) = G_CONSTANT i32 -2147483648
-    ; CHECK-NEXT: %add:_(s32) = G_ADD %a, %c
+    ; CHECK-NEXT: [[C:%[0-9]+]]:_(s32) = G_CONSTANT i32 -2147483648
+    ; CHECK-NEXT: %add:_(s32) = G_ADD %a, [[C]]
     ; CHECK-NEXT: $eax = COPY %add(s32)
     ; CHECK-NEXT: RET implicit $rax
     %a:_(s32) = COPY $eax
-    %c:_(s32) = G_CONSTANT i32 -2147483648
+    %c:_(i32) = G_CONSTANT i32 -2147483648
     %add:_(s32) = nsw nuw G_SUB %a, %c
     $eax = COPY %add
     RET implicit $rax
