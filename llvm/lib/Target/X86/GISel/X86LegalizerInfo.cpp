@@ -59,6 +59,8 @@ X86LegalizerInfo::X86LegalizerInfo(const X86Subtarget &STI,
   const LLT i32 = LLT::integer(32);
   const LLT f32 = LLT::float32();
   const LLT s64 = LLT::scalar(64);
+  const LLT i64 = LLT::integer(64);
+  const LLT f64 = LLT::float64();
   const LLT s80 = LLT::scalar(80);
   const LLT s128 = LLT::scalar(128);
   const LLT sMaxScalar = Subtarget.is64Bit() ? s64 : s32;
@@ -600,6 +602,7 @@ X86LegalizerInfo::X86LegalizerInfo(const X86Subtarget &STI,
 
   getActionDefinitionsBuilder(G_BITCAST)
       .legalFor(HasSSE1, {{i32, f32}, {f32, i32}, {i16, f16}, {f16, i16}})
+      .legalFor(HasSSE2 && Is64Bit, {{i64, f64}, {f64, i64}})
       .customFor(UseX87, {{s32, s32}, {s64, s64}});
 
   // todo: vectors and address spaces
